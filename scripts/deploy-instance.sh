@@ -5,7 +5,7 @@ INGRESS_SUBDOMAIN="$3"
 NAME="$4"
 
 if [[ -z "${NAME}" ]]; then
-  NAME=nexus
+  NAME=jaeger
 fi
 
 if [[ -z "${TMP_DIR}" ]]; then
