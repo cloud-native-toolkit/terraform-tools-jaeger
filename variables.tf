@@ -32,5 +32,5 @@ variable "ingress_subdomain" {
 variable "name" {
   type        = string
   description = "The name for the instance"
-  default     = "nexus"
+  default     = "jaeger"
 }
