@@ -10,9 +10,11 @@ fi
 mkdir -p "${TMP_DIR}"
 
 if [[ "${CLUSTER_TYPE}" == "ocp4" ]]; then
-  SOURCE="community-operators"
+  SOURCE="redhat-operators"
+  NAME="jaeger-product"
 else
   SOURCE="operatorhubio-catalog"
+  NAME="jaeger"
 fi
 
 if [[ -z "${OLM_NAMESPACE}" ]]; then
@@ -23,16 +25,16 @@ if [[ -z "${OLM_NAMESPACE}" ]]; then
   fi
 fi
 
-YAML_FILE=${TMP_DIR}/nexus-subscription.yaml
+YAML_FILE=${TMP_DIR}/jaeger-subscription.yaml
 
 cat <<EOL > ${YAML_FILE}
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: nexus-operator-hub
+  name: jaeger
 spec:
-  channel: alpha
-  name: nexus-operator-hub
+  channel: stable
+  name: jaeger
   source: $SOURCE
   sourceNamespace: $OLM_NAMESPACE
 EOL

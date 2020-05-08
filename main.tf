@@ -8,11 +8,9 @@ locals {
   tmp_dir       = "${path.cwd}/.tmp"
   host          = "${var.name}-${var.app_namespace}.${var.ingress_subdomain}"
   url_endpoint  = "https://${host}"
-  password_file = "${path.cwd}/nexus-password.val"
-  password      = data.local_file.nexus-password.content
 }
 
-resource "null_resource" "nexus-subscription" {
+resource "null_resource" "jaeger-subscription" {
   provisioner "local-exec" {
     command = "${path.module}/scripts/deploy-subscription.sh ${var.cluster_type} ${var.operator_namespace} ${var.olm_namespace}"
 
@@ -23,11 +21,11 @@ resource "null_resource" "nexus-subscription" {
   }
 }
 
-resource "null_resource" "nexus-instance" {
-  depends_on = [null_resource.nexus-subscription]
+resource "null_resource" "jaeger-instance" {
+  depends_on = [null_resource.jaeger-subscription]
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${var.app_namespace} ${var.ingress_subdomain} ${var.name} ${local.password_file}"
+    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${var.app_namespace} ${var.ingress_subdomain} ${var.name}"
 
     environment = {
       KUBECONFIG = var.cluster_config_file
@@ -35,21 +33,15 @@ resource "null_resource" "nexus-instance" {
   }
 }
 
-data "local_file" "nexus-password" {
-  depends_on = [null_resource.nexus-instance]
-
-  filename = local.password_file
-}
-
 data "helm_repository" "toolkit-charts" {
   name = "toolkit-charts"
   url  = "https://ibm-garage-cloud.github.io/toolkit-charts/"
 }
 
-resource "helm_release" "nexus-config" {
-  depends_on = [null_resource.nexus-instance]
+resource "helm_release" "jaeger-config" {
+  depends_on = [null_resource.jaeger-instance]
 
-  name         = "nexus"
+  name         = "jaeger"
   repository   = data.helm_repository.toolkit-charts.name
   chart        = "tool-config"
   namespace    = var.app_namespace
@@ -58,15 +50,5 @@ resource "helm_release" "nexus-config" {
   set {
     name  = "url"
     value = local.host
-  }
-
-  set {
-    name  = "username"
-    value = "admin"
-  }
-
-  set {
-    name  = "password"
-    value = local.password
   }
 }
