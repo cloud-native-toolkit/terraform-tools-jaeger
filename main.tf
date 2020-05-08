@@ -7,7 +7,7 @@ provider "helm" {
 locals {
   tmp_dir       = "${path.cwd}/.tmp"
   host          = "${var.name}-${var.app_namespace}.${var.ingress_subdomain}"
-  url_endpoint  = "https://${host}"
+  url_endpoint  = "https://${local.host}"
 }
 
 resource "null_resource" "jaeger-subscription" {
