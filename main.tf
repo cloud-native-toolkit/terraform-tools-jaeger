@@ -35,16 +35,11 @@ resource "null_resource" "jaeger-instance" {
   }
 }
 
-data "helm_repository" "toolkit-charts" {
-  name = "toolkit-charts"
-  url  = "https://ibm-garage-cloud.github.io/toolkit-charts/"
-}
-
 resource "helm_release" "jaeger-config" {
   depends_on = [null_resource.jaeger-instance]
 
   name         = "jaeger"
-  repository   = data.helm_repository.toolkit-charts.name
+  repository   = "https://ibm-garage-cloud.github.io/toolkit-charts/"
   chart        = "tool-config"
   namespace    = var.app_namespace
   force_update = true
