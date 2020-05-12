@@ -1,4 +1,6 @@
 provider "helm" {
+  version = ">= 1.0.0"
+
   kubernetes {
     config_path = var.cluster_config_file
   }
