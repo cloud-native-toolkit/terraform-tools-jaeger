@@ -34,7 +34,8 @@ metadata:
   name: jaeger
 spec:
   channel: stable
-  name: jaeger
+  installPlanApproval: Automatic
+  name: ${NAME}
   source: $SOURCE
   sourceNamespace: $OLM_NAMESPACE
 EOL

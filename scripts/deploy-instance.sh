@@ -28,4 +28,6 @@ EOL
 
 kubectl apply -f ${YAML_FILE} -n "${NAMESPACE}"
 
+sleep 2
+
 kubectl rollout status deployment/${NAME} -n "${NAMESPACE}"
