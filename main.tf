@@ -27,7 +27,7 @@ resource "null_resource" "jaeger-instance" {
   depends_on = [null_resource.jaeger-subscription]
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${var.app_namespace} ${var.ingress_subdomain} ${var.name}"
+    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${var.app_namespace} ${var.ingress_subdomain} ${var.name} ${var.tls_secret_name}"
 
     environment = {
       KUBECONFIG = var.cluster_config_file

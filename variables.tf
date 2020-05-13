@@ -29,6 +29,12 @@ variable "ingress_subdomain" {
   default     = ""
 }
 
+variable "tls_secret_name" {
+  type        = string
+  description = "The name of the secret containing the TLS certificates"
+  default     = ""
+}
+
 variable "name" {
   type        = string
   description = "The name for the instance"
