@@ -46,6 +46,11 @@ resource "helm_release" "jaeger-config" {
 
   set {
     name  = "url"
-    value = local.host
+    value = local.url_endpoint
+  }
+
+  set {
+    name  = "applicationMenu"
+    value = var.cluster_type != "kubernetes"
   }
 }
