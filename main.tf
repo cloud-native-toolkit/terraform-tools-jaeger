@@ -35,8 +35,20 @@ resource "null_resource" "jaeger-instance" {
   }
 }
 
+resource "null_resource" "delete-consolelink" {
+  count = var.cluster_type != "kubernetes" ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "kubectl delete consolelink -l grouping=garage-cloud-native-toolkit -l app=jaeger || exit 0"
+
+    environment = {
+      KUBECONFIG = var.cluster_config_file
+    }
+  }
+}
+
 resource "helm_release" "jaeger-config" {
-  depends_on = [null_resource.jaeger-instance]
+  depends_on = [null_resource.jaeger-instance, null_resource.delete-consolelink]
 
   name         = "jaeger"
   repository   = "https://ibm-garage-cloud.github.io/toolkit-charts/"
@@ -52,5 +64,15 @@ resource "helm_release" "jaeger-config" {
   set {
     name  = "applicationMenu"
     value = var.cluster_type != "kubernetes"
+  }
+
+  set {
+    name  = "ingressSubdomain"
+    value = var.ingress_subdomain
+  }
+
+  set {
+    name  = "displayName"
+    value = "Jaeger"
   }
 }
