@@ -12,6 +12,7 @@ on:
 jobs:
   verify:
     # The type of runner that the job will run on
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     runs-on: ubuntu-latest
     container: ibmgaragecloud/cli-tools:0.3.0-lite
 

@@ -1,6 +1,6 @@
 # Jaeger terraform module
 
-![Verify and release module](https://github.com/ibm-garage-cloud/terraform-tools-jaeger/workflows/Verify%20and%20release%20module/badge.svg)
+![Latest release](https://img.shields.io/github/v/release/ibm-garage-cloud/terraform-tools-jaeger?sort=semver) ![Verify and release module](https://github.com/ibm-garage-cloud/terraform-tools-jaeger/workflows/Verify%20and%20release%20module/badge.svg)
 
 Terraform module that will install Jaeger into the cluster via an operator.
 
