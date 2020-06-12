@@ -13,12 +13,27 @@ locals {
 }
 
 resource "null_resource" "jaeger-subscription" {
+  triggers = {
+    operator_namespace = var.operator_namespace
+    kubeconfig         = var.cluster_config_file
+  }
+
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-subscription.sh ${var.cluster_type} ${var.operator_namespace} ${var.olm_namespace}"
+    command = "${path.module}/scripts/deploy-subscription.sh ${var.cluster_type} ${self.triggers.operator_namespace} ${var.olm_namespace}"
 
     environment = {
       TMP_DIR    = local.tmp_dir
-      KUBECONFIG = var.cluster_config_file
+      KUBECONFIG = self.triggers.kubeconfig
+    }
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+
+    command = "${path.module}/scripts/destroy-subscription.sh ${self.triggers.operator_namespace}"
+
+    environment = {
+      KUBECONFIG = self.triggers.kubeconfig
     }
   }
 }
@@ -26,11 +41,27 @@ resource "null_resource" "jaeger-subscription" {
 resource "null_resource" "jaeger-instance" {
   depends_on = [null_resource.jaeger-subscription]
 
+  triggers = {
+    namespace  = var.app_namespace
+    name       = var.name
+    kubeconfig = var.cluster_config_file
+  }
+
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${var.app_namespace} ${var.ingress_subdomain} ${var.name} ${var.tls_secret_name}"
+    command = "${path.module}/scripts/deploy-instance.sh ${var.cluster_type} ${self.triggers.namespace} ${var.ingress_subdomain} ${self.triggers.name} ${var.tls_secret_name}"
 
     environment = {
-      KUBECONFIG = var.cluster_config_file
+      KUBECONFIG = self.triggers.kubeconfig
+    }
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+
+    command = "${path.module}/scripts/destroy-instance.sh ${self.triggers.namespace} ${self.triggers.name}"
+
+    environment = {
+      KUBECONFIG = self.triggers.kubeconfig
     }
   }
 }
