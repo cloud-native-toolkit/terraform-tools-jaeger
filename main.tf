@@ -19,7 +19,7 @@ resource "null_resource" "jaeger-subscription" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/scripts/deploy-subscription.sh ${var.cluster_type} ${self.triggers.operator_namespace} ${var.olm_namespace}"
+    command = "${path.module}/scripts/deploy-subscription.sh ${var.cluster_type} ${self.triggers.operator_namespace} ${var.olm_namespace} ${var.app_namespace}"
 
     environment = {
       TMP_DIR    = local.tmp_dir
