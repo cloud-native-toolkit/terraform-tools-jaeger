@@ -3,7 +3,7 @@
 NAMESPACE="$1"
 NAME="$2"
 
-DEPLOYMENTS="${NAME}-server,${NAME}-repo-server,${NAME}-redis,${NAME}-dex-server,${NAME}-application-controller"
+DEPLOYMENTS="${NAME}"
 
 IFS=","
 for DEPLOYMENT in ${DEPLOYMENTS}; do
