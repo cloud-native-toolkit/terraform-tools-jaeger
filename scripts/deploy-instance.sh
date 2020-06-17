@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$(cd $(dirname "$0"); pwd -P)
+
 CLUSTER_TYPE="$1"
 NAMESPACE="$2"
 INGRESS_SUBDOMAIN="$3"
@@ -51,6 +53,4 @@ fi
 
 kubectl apply -f ${YAML_FILE} -n "${NAMESPACE}"
 
-sleep 2
-
-kubectl rollout status deployment/${NAME} -n "${NAMESPACE}"
+"${SCRIPT_DIR}/wait-for-deployments.sh" "${NAMESPACE}" jaeger
