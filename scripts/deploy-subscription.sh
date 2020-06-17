@@ -41,3 +41,12 @@ spec:
 EOL
 
 kubectl apply -f ${YAML_FILE} -n "${OPERATOR_NAMESPACE}"
+
+count=0
+until kubectl get jaeger.jaegertracing.io 1> /dev/null 2> /dev/null || [[ "${count}" -eq "10" ]]; do
+  echo "Waiting for Jaeger CRD to be installed"
+  sleep 15
+  count=$((count + 1))
+done
+
+kubectl get jaeger.jaegertracing.io
