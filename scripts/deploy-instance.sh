@@ -53,4 +53,4 @@ fi
 
 kubectl apply -f ${YAML_FILE} -n "${NAMESPACE}"
 
-"${SCRIPT_DIR}/wait-for-deployments.sh" "${NAMESPACE}" "${NAME}"
+"${SCRIPT_DIR}/wait-for-deployments.sh" "${NAMESPACE}" jaeger
