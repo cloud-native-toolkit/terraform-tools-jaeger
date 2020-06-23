@@ -38,7 +38,7 @@ echo "Validating config urls:"
 echo "${CONFIG_URLS}"
 
 echo "${CONFIG_URLS}" | while read url; do
-  if [[ -n "${url}" ]]; then
+  if [[ -n "${url}" ]] && [[ "${url}" =~ ^http ]]; then
     ${SCRIPT_DIR}/waitForEndpoint.sh "${url}" 10 10
   fi
 done
