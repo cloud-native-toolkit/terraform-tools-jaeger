@@ -106,4 +106,19 @@ resource "helm_release" "jaeger-config" {
     name  = "displayName"
     value = "Jaeger"
   }
+
+  set {
+    name  = "otherConfig.agent_host"
+    value = "jaeger-agent.${var.app_namespace}"
+  }
+
+  set {
+    name  = "otherConfig.agent_port"
+    value = "6832"
+  }
+
+  set {
+    name  = "otherConfig.endpoint"
+    value = "http://jaeger-collector.${var.app_namespace}:14268/api/traces"
+  }
 }

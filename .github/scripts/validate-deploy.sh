@@ -32,13 +32,13 @@ echo "${ENDPOINTS}" | while read endpoint; do
   fi
 done
 
-CONFIG_URLS=$(kubectl get configmap -n "${NAMESPACE}" -l grouping=garage-cloud-native-toolkit -l app.kubernetes.io/component=tools -o json | jq '.items[].data | to_entries | select(.[].key | endswith("_URL")) | .[].value' | sed "s/\"//g")
+CONFIG_URLS=$(kubectl get configmap -n "${NAMESPACE}" -l grouping=garage-cloud-native-toolkit -l app.kubernetes.io/component=tools -o json | jq '.items[].data | with_entries(select(.key | endswith("_URL"))) | .[]' | sed "s/\"//g")
 
 echo "Validating config urls:"
 echo "${CONFIG_URLS}"
 
 echo "${CONFIG_URLS}" | while read url; do
-  if [[ -n "${url}" ]]; then
+  if [[ -n "${url}" ]] && [[ "${url}" =~ ^http ]]; then
     ${SCRIPT_DIR}/waitForEndpoint.sh "${url}" 10 10
   fi
 done
