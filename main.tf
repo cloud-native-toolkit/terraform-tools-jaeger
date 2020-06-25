@@ -82,3 +82,15 @@ resource "helm_release" "jaeger" {
 
   disable_openapi_validation = true
 }
+
+resource "null_resource" "wait-for-jaeger" {
+  depends_on = [helm_release.jaeger]
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/wait-for-deployments.sh ${var.app_namespace} jaeger"
+
+    environment = {
+      KUBECONFIG = var.cluster_config_file
+    }
+  }
+}
