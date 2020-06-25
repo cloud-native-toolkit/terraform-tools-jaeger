@@ -3,22 +3,16 @@
 NAMESPACE="$1"
 NAME="$2"
 
-DEPLOYMENTS="${NAME}"
+count=0
+while [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app=${NAME}" | wc -l) -eq 0 ]] && [[ "$count" -lt 10 ]]; do
+  echo "Waiting for deployments in ${NAMESPACE} namespace"
+  sleep 30
+done
 
-IFS=","
-for DEPLOYMENT in ${DEPLOYMENTS}; do
+DEPLOYMENTS=$(kubectl get deployment -n "${NAMESPACE}" -l "app=${NAME}" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
+
+echo "${DEPLOYMENTS}" | while read DEPLOYMENT; do
   count=0
-  until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" 1> /dev/null 2> /dev/null; do
-    if [[ ${count} -eq 10 ]]; then
-      echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE} to start"
-      exit 1
-    else
-      count=$((count + 1))
-    fi
-
-    echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE} to start"
-    sleep 60
-  done
 
   kubectl rollout status deployment "${DEPLOYMENT}" -n "${NAMESPACE}"
 done
