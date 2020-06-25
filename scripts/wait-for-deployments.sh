@@ -4,7 +4,7 @@ NAMESPACE="$1"
 NAME="$2"
 
 count=0
-while [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app=${NAME}" | wc -l) -eq 0 ]] && [[ "$count" -lt 10 ]]; do
+while [[ $(kubectl get deployment -n "${NAMESPACE}" -l "app=${NAME}" | wc -l) -gt 2 ]] && [[ "$count" -lt 10 ]]; do
   echo "Waiting for deployments in ${NAMESPACE} namespace"
   sleep 30
 done
