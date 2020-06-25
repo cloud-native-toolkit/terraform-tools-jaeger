@@ -40,7 +40,7 @@ resource "null_resource" "setup-chart" {
 }
 
 resource "null_resource" "delete-consolelink" {
-  count = var.cluster_type != "kubernetes" ? 1 : 0
+  count = var.cluster_type == "ocp4" && var.mode != "setup" ? 1 : 0
 
   provisioner "local-exec" {
     command = "kubectl delete consolelink -l grouping=garage-cloud-native-toolkit -l app=jaeger || exit 0"
@@ -85,6 +85,7 @@ resource "helm_release" "jaeger" {
 
 resource "null_resource" "wait-for-jaeger" {
   depends_on = [helm_release.jaeger]
+  count = var.mode != "setup" ? 1 : 0
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/wait-for-deployments.sh ${var.app_namespace} jaeger"
