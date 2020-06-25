@@ -9,15 +9,15 @@ IFS=","
 for DEPLOYMENT in ${DEPLOYMENTS}; do
   count=0
   until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" 1> /dev/null 2> /dev/null; do
-    if [[ ${count} -eq 12 ]]; then
-      echo "Timed out waiting for deployment/${DEPLOYMENT} to start"
+    if [[ ${count} -eq 10 ]]; then
+      echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE} to start"
       exit 1
     else
       count=$((count + 1))
     fi
 
-    echo "Waiting for deployment/${DEPLOYMENT} to start"
-    sleep 20
+    echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE} to start"
+    sleep 60
   done
 
   kubectl rollout status deployment "${DEPLOYMENT}" -n "${NAMESPACE}"
