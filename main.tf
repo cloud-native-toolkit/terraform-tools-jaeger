@@ -11,7 +11,8 @@ locals {
   host          = "${var.name}-${var.app_namespace}.${var.ingress_subdomain}"
   url_endpoint  = "https://${local.host}"
   gitops_dir             = var.gitops_dir != "" ? var.gitops_dir : "${path.cwd}/gitops"
-  chart_dir              = "${local.gitops_dir}/jaeger"
+  chart_name             = "jaeger"
+  chart_dir              = "${local.gitops_dir}/${local.chart_name}"
   global_config          = {
     clusterType = var.cluster_type
     ingressSubdomain = var.ingress_subdomain
@@ -34,7 +35,7 @@ locals {
 
 resource "null_resource" "setup-chart" {
   provisioner "local-exec" {
-    command = "mkdir -p ${local.gitops_dir}/artifactory && cp -R ${path.module}/chart/artifactory/* ${local.chart_dir}"
+    command = "mkdir -p ${local.chart_dir} && cp -R ${path.module}/chart/${local.chart_name}/* ${local.chart_dir}"
   }
 }
 
