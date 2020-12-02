@@ -3,22 +3,24 @@
 NAMESPACE="$1"
 NAME="$2"
 
+count=0
+until kubectl get deployment -n "${NAMESPACE}" "${NAME}"; do
+  if [[ "$count" -eq 12 ]]; then
+    echo "Timed out waiting for deployment/${NAME} in ${NAMESPACE}"
+    kubectl get deployment -n "${NAMESPACE}" "${NAME}"
+    exit 1
+  fi
+
+  echo "Waiting for deployment/${NAME} in ${NAMESPACE} namespace"
+  sleep 30
+
+  count=$((count+1))
+done
+
 DEPLOYMENTS="${NAME}"
 
-IFS=","
-for DEPLOYMENT in ${DEPLOYMENTS}; do
+echo "${DEPLOYMENTS}" | while read DEPLOYMENT; do
   count=0
-  until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" 1> /dev/null 2> /dev/null; do
-    if [[ ${count} -eq 12 ]]; then
-      echo "Timed out waiting for deployment/${DEPLOYMENT} to start"
-      exit 1
-    else
-      count=$((count + 1))
-    fi
-
-    echo "Waiting for deployment/${DEPLOYMENT} to start"
-    sleep 20
-  done
 
   kubectl rollout status deployment "${DEPLOYMENT}" -n "${NAMESPACE}"
 done

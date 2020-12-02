@@ -1,0 +1,9 @@
+dependencies:
+- name: jaeger-operator
+  repository: https://ibm-garage-cloud.github.io/toolkit-charts/
+  version: 0.4.0
+- name: tool-config
+  repository: https://ibm-garage-cloud.github.io/toolkit-charts/
+  version: 0.7.0
+digest: sha256:27f25665e0c7440dfc6984888395630f17e53cda843cbadaf95d64c8fd7bf874
+generated: "2020-07-02T23:42:38.683842-05:00"
